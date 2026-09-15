@@ -1,1 +1,177 @@
+:root {
+  --primary: #1e3a5f;
+  --primary-light: #2c5282;
+  --accent: #3182ce;
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --text: #1a202c;
+  --muted: #718096;
+  --success: #2f855a;
+  --warning: #b7791f;
+  --danger: #c53030;
+  --radius: 8px;
+}
 
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ---------- Auth page ---------- */
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.auth-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  padding: 32px;
+  width: 100%;
+  max-width: 380px;
+}
+
+.auth-card h1 {
+  font-size: 1.3rem;
+  margin: 0 0 4px;
+  color: var(--primary);
+}
+
+.auth-card p.subtitle {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 0 0 20px;
+}
+
+.tabs { display: flex; margin-bottom: 20px; border-bottom: 1px solid var(--border); }
+.tab-btn {
+  flex: 1; padding: 10px; background: none; border: none; cursor: pointer;
+  font-weight: 600; color: var(--muted); border-bottom: 2px solid transparent;
+}
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+form { display: flex; flex-direction: column; gap: 12px; }
+
+label { font-size: 0.8rem; font-weight: 600; color: var(--muted); }
+
+input, select, textarea {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+button.primary {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 11px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 6px;
+}
+button.primary:hover { background: var(--primary-light); }
+
+button.secondary {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text);
+}
+
+button.danger { background: var(--danger); color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+button.success-btn { background: var(--success); color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+button.warning-btn { background: var(--warning); color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+
+.msg { font-size: 0.82rem; padding: 8px 10px; border-radius: 6px; margin-top: 4px; display: none; }
+.msg.error { background: #fed7d7; color: var(--danger); display: block; }
+.msg.success { background: #c6f6d5; color: var(--success); display: block; }
+
+/* ---------- Dashboard layout ---------- */
+.app-shell { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 230px;
+  background: var(--primary);
+  color: white;
+  padding: 20px 0;
+  flex-shrink: 0;
+}
+
+.sidebar .brand { padding: 0 20px 20px; font-weight: 700; font-size: 1.05rem; border-bottom: 1px solid rgba(255,255,255,0.15); margin-bottom: 10px;}
+.sidebar .brand small { display: block; font-weight: 400; font-size: 0.72rem; opacity: 0.75; margin-top: 4px; }
+
+.nav-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 11px 20px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.85);
+  cursor: pointer;
+  font-size: 0.88rem;
+}
+.nav-item:hover { background: rgba(255,255,255,0.08); }
+.nav-item.active { background: var(--accent); color: white; font-weight: 600; }
+
+.sidebar .userbox { padding: 14px 20px; margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.15); font-size: 0.78rem; }
+.sidebar .userbox .role-badge {
+  display: inline-block; margin-top: 4px; padding: 2px 8px; border-radius: 20px;
+  background: rgba(255,255,255,0.15); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.4px;
+}
+.sidebar .logout-btn { margin-top: 10px; background: rgba(255,255,255,0.12); color: white; border: none; padding: 7px 10px; border-radius: 6px; cursor: pointer; width: 100%; }
+
+.main { flex: 1; padding: 28px 34px; overflow-x: auto; }
+.main h2 { margin-top: 0; color: var(--primary); }
+.view { display: none; }
+.view.active { display: block; }
+
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 18px; }
+
+table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); }
+th { color: var(--muted); text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.4px; }
+tr:hover td { background: #fafbfc; }
+
+.status-pill { padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; }
+.status-Available, .status-Approved, .status-Returned, .status-Closed { background: #c6f6d5; color: var(--success); }
+.status-Pending, .status-Overdue { background: #feebc8; color: var(--warning); }
+.status-Borrowed, .status-Released { background: #bee3f8; color: #2b6cb0; }
+.status-Rejected, .status-Damaged, .status-Maintenance { background: #fed7d7; color: var(--danger); }
+
+.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; flex-wrap: wrap; }
+
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  display: none; align-items: center; justify-content: center; z-index: 50;
+}
+.modal-backdrop.active { display: flex; }
+.modal { background: white; border-radius: var(--radius); padding: 24px; width: 100%; max-width: 420px; }
+.modal h3 { margin-top: 0; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+.access-denied { text-align: center; padding: 60px 20px; color: var(--muted); }
+
+.badge-count { background: var(--danger); color: white; font-size: 0.68rem; padding: 1px 6px; border-radius: 10px; margin-left: 6px; }
+
+@media (max-width: 800px) {
+  .app-shell { flex-direction: column; }
+  .sidebar { width: 100%; display: flex; flex-wrap: wrap; padding: 10px; }
+  .sidebar .brand, .sidebar .userbox { width: 100%; }
+  .main { padding: 18px; }
+}
