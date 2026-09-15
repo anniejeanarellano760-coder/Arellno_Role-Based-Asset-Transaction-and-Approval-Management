@@ -1,12 +1,3 @@
-// =====================================================================
-// dashboard.html — Equipment view (all roles) + request submission
-// Depends on: supabaseClient.js (must load first), app.js globals
-// (currentUser, currentProfile, statusPill, closeModal)
-// =====================================================================
-
-// ---------------------------------------------------------------------
-// EQUIPMENT LIST (view: all roles)
-// ---------------------------------------------------------------------
 async function loadEquipment() {
   const tbody = document.getElementById("equipmentTableBody");
   const { data, error } = await supabaseClient
@@ -21,7 +12,7 @@ async function loadEquipment() {
 
   tbody.innerHTML = data
     .map((eq) => {
-      const canRequest = eq.status === "Available"; // BR-A4-01 / BR-A4-09
+      const canRequest = eq.status === "Available"; 
       return `<tr>
         <td>${eq.code}</td>
         <td>${eq.name}</td>
