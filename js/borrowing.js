@@ -1,12 +1,3 @@
-// =====================================================================
-// dashboard.html — My Requests, Approvals, Process Transactions
-// Depends on: supabaseClient.js, app.js globals (currentUser,
-// currentProfile, statusPill, closeModal)
-// =====================================================================
-
-// ---------------------------------------------------------------------
-// MY REQUESTS (all roles)
-// ---------------------------------------------------------------------
 async function loadMyRequests() {
   const tbody = document.getElementById("myRequestsTableBody");
   const { data, error } = await supabaseClient
