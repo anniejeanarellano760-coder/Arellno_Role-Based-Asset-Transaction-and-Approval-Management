@@ -1,1 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Login - Laboratory Asset Management</title>
+<link rel="stylesheet" href="css/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
 
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <h1>Laboratory Asset Management</h1>
+    <p class="subtitle">Role-Based Asset Transaction and Approval Management</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" id="tabLoginBtn" onclick="showTab('login')">Log In</button>
+      <button class="tab-btn" id="tabSignupBtn" onclick="showTab('signup')">Sign Up</button>
+    </div>
+
+    <form id="loginForm">
+      <div>
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" required placeholder="you@school.edu" />
+      </div>
+      <div>
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" required placeholder="••••••••" />
+      </div>
+      <button type="submit" class="primary">Log In</button>
+      <div class="msg" id="loginMsg"></div>
+    </form>
+
+    <form id="signupForm" style="display:none;">
+      <div>
+        <label for="signupName">Full Name</label>
+        <input type="text" id="signupName" required placeholder="Juan Dela Cruz" />
+      </div>
+      <div>
+        <label for="signupEmail">Email</label>
+        <input type="email" id="signupEmail" required placeholder="you@school.edu" />
+      </div>
+      <div>
+        <label for="signupPassword">Password</label>
+        <input type="password" id="signupPassword" required minlength="6" placeholder="At least 6 characters" />
+      </div>
+      <p style="font-size:0.75rem;color:var(--muted);margin:0;">
+        New accounts are created with the <strong>Requester</strong> role by default.
+        An Administrator can upgrade your role afterward from the Manage Users screen.
+      </p>
+      <button type="submit" class="primary">Create Account</button>
+      <div class="msg" id="signupMsg"></div>
+    </form>
+  </div>
+</div>
+
+<script src="js/supabaseClient.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>
