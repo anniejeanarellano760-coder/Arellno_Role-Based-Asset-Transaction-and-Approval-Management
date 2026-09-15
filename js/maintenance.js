@@ -1,8 +1,3 @@
-// =====================================================================
-// dashboard.html — Maintenance view (staff + admin / BR-A4-09)
-// Depends on: supabaseClient.js, app.js globals (statusPill)
-// =====================================================================
-
 async function loadMaintenance() {
   const tbody = document.getElementById("maintenanceTableBody");
   const { data, error } = await supabaseClient.from("equipment").select("*").order("code");
