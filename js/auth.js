@@ -1,7 +1,3 @@
-// =====================================================================
-// index.html logic: sign up, log in, redirect if already logged in.
-// =====================================================================
-
 function showTab(which) {
   const isLogin = which === "login";
   document.getElementById("loginForm").style.display = isLogin ? "flex" : "none";
