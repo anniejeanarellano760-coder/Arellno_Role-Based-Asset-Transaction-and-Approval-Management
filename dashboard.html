@@ -1,1 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard - Laboratory Asset Management</title>
+<link rel="stylesheet" href="css/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
 
+<div class="app-shell">
+
+  <!-- ================= SIDEBAR (role-based nav) ================= -->
+  <div class="sidebar">
+    <div class="brand">
+      Lab Asset System
+      <small>Section A &middot; Laboratory 4</small>
+    </div>
+
+    <!-- Everyone -->
+    <button class="nav-item active" data-view="equipment" onclick="switchView('equipment')">Equipment</button>
+    <button class="nav-item" data-view="my-requests" onclick="switchView('my-requests')">My Requests</button>
+
+    <!-- Staff + Admin -->
+    <button class="nav-item role-staff role-admin" data-view="transactions" onclick="switchView('transactions')">Process Transactions</button>
+    <button class="nav-item role-staff role-admin" data-view="maintenance" onclick="switchView('maintenance')">Maintenance</button>
+
+    <!-- Admin only -->
+    <button class="nav-item role-admin" data-view="approvals" onclick="switchView('approvals')">Approvals <span id="pendingCount" class="badge-count" style="display:none;"></span></button>
+    <button class="nav-item role-admin" data-view="users" onclick="switchView('users')">Manage Users</button>
+    <button class="nav-item role-admin" data-view="audit" onclick="switchView('audit')">Audit Logs</button>
+
+    <div class="userbox">
+      <div id="userName">Loading...</div>
+      <div id="userEmail" style="opacity:0.7;"></div>
+      <span class="role-badge" id="userRole">-</span>
+      <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
+  </div>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <div class="main">
+
+    <!-- ---------- Equipment (all roles) ---------- -->
+    <div class="view active" id="view-equipment">
+      <h2>Equipment</h2>
+      <div class="card">
+        <div class="toolbar">
+          <div style="font-size:0.85rem;color:var(--muted);">Available equipment can be requested. Staff/Admin can add new equipment.</div>
+          <button class="primary role-staff role-admin" style="display:none;" onclick="openAddEquipmentModal()">+ Add Equipment</button>
+        </div>
+        <table>
+          <thead><tr><th>Code</th><th>Name</th><th>Category</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="equipmentTableBody"><tr><td colspan="5">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ---------- My Requests (all roles) ---------- -->
+    <div class="view" id="view-my-requests">
+      <h2>My Requests</h2>
+      <div class="card">
+        <table>
+          <thead><tr><th>Equipment</th><th>Purpose</th><th>Status</th><th>Requested</th><th>Notes</th></tr></thead>
+          <tbody id="myRequestsTableBody"><tr><td colspan="5">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ---------- Approvals (admin only) ---------- -->
+    <div class="view" id="view-approvals">
+      <h2>Pending Approvals</h2>
+      <div class="card">
+        <table>
+          <thead><tr><th>Requester</th><th>Equipment</th><th>Purpose</th><th>Requested</th><th>Action</th></tr></thead>
+          <tbody id="approvalsTableBody"><tr><td colspan="5">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ---------- Process Transactions (staff+admin) ---------- -->
+    <div class="view" id="view-transactions">
+      <h2>Process Transactions</h2>
+      <div class="card">
+        <p style="font-size:0.85rem;color:var(--muted);margin-top:0;">Release Approved requests, then process Returns for Released items.</p>
+        <table>
+          <thead><tr><th>Requester</th><th>Equipment</th><th>Status</th><th>Approved/Released</th><th>Action</th></tr></thead>
+          <tbody id="transactionsTableBody"><tr><td colspan="5">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ---------- Maintenance (staff+admin) ---------- -->
+    <div class="view" id="view-maintenance">
+      <h2>Maintenance</h2>
+      <div class="card">
+        <p style="font-size:0.85rem;color:var(--muted);margin-top:0;">Send equipment to Maintenance or bring it back to Available. Equipment under Maintenance cannot be borrowed (BR-A4-09).</p>
+        <table>
+          <thead><tr><th>Code</th><th>Name</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="maintenanceTableBody"><tr><td colspan="4">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ---------- Manage Users (admin only) ---------- -->
+    <div class="view" id="view-users">
+      <h2>Manage Users</h2>
+      <div class="card">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Change Role</th></tr></thead>
+          <tbody id="usersTableBody"><tr><td colspan="4">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ---------- Audit Logs (admin only) ---------- -->
+    <div class="view" id="view-audit">
+      <h2>Audit Logs</h2>
+      <div class="card">
+        <table>
+          <thead><tr><th>Date/Time</th><th>User</th><th>Action</th><th>Module</th><th>Record ID</th><th>Description</th></tr></thead>
+          <tbody id="auditTableBody"><tr><td colspan="6">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= MODALS ================= -->
+
+<!-- Request equipment -->
+<div class="modal-backdrop" id="requestModal">
+  <div class="modal">
+    <h3>Submit Borrowing Request</h3>
+    <form id="requestForm">
+      <input type="hidden" id="requestEquipmentId" />
+      <label>Equipment</label>
+      <input type="text" id="requestEquipmentName" disabled />
+      <label for="requestPurpose">Purpose</label>
+      <textarea id="requestPurpose" rows="3" required placeholder="e.g. Thesis defense presentation"></textarea>
+      <div class="modal-actions">
+        <button type="button" class="secondary" onclick="closeModal('requestModal')">Cancel</button>
+        <button type="submit" class="primary">Submit Request</button>
+      </div>
+      <div class="msg" id="requestMsg"></div>
+    </form>
+  </div>
+</div>
+
+<!-- Add equipment -->
+<div class="modal-backdrop" id="addEquipmentModal">
+  <div class="modal">
+    <h3>Add Equipment</h3>
+    <form id="addEquipmentForm">
+      <label for="eqCode">Code</label>
+      <input type="text" id="eqCode" required placeholder="e.g. LAP-002" />
+      <label for="eqName">Name</label>
+      <input type="text" id="eqName" required placeholder="e.g. HP ProBook Laptop" />
+      <label for="eqCategory">Category</label>
+      <input type="text" id="eqCategory" placeholder="e.g. Computers" />
+      <div class="modal-actions">
+        <button type="button" class="secondary" onclick="closeModal('addEquipmentModal')">Cancel</button>
+        <button type="submit" class="primary">Add Equipment</button>
+      </div>
+      <div class="msg" id="addEquipmentMsg"></div>
+    </form>
+  </div>
+</div>
+
+<!-- Return with damage flag -->
+<div class="modal-backdrop" id="returnModal">
+  <div class="modal">
+    <h3>Process Return</h3>
+    <form id="returnForm">
+      <input type="hidden" id="returnRequestId" />
+      <label><input type="checkbox" id="returnDamaged" style="width:auto;display:inline-block;" /> Equipment returned damaged</label>
+      <div class="modal-actions">
+        <button type="button" class="secondary" onclick="closeModal('returnModal')">Cancel</button>
+        <button type="submit" class="primary">Confirm Return</button>
+      </div>
+      <div class="msg" id="returnMsg"></div>
+    </form>
+  </div>
+</div>
+
+<script src="js/supabaseClient.js"></script>
+<script src="js/equipment.js"></script>
+<script src="js/borrowing.js"></script>
+<script src="js/maintenance.js"></script>
+<script src="js/users.js"></script>
+<script src="js/audit.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
